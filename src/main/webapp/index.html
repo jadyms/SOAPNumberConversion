@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Start Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>      
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    </head>
+    <body>
+        
+        <div class="container">
+            <div class="card text-center">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#words" data-toggle="tab">Number to words</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#dollars" data-toggle="tab">Number to Dollars</a>
+                        </li>
+                    </ul>
+                </div>
+  
+                <div></div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        
+                        <div class="tab-pane active" id="words">
+                            <h5 class="card-title">Convert a number to words</h5>
+                            <div class="card-text">
+                                <h1>Words</h1>
+                                <form action="NumberToWordsServlet">
+                                    <div class="form-group row mx-sm-3 mb-2">
+                                        <label for="username" class="col-sm-6 col-form-label">Enter Number Here</label> 
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="number1" name="number1" value="">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-success" >Convert to Words</button>
+                                </form> 
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="dollars">
+                            <h5 class="card-title">Convert a number to dollars</h5>
+                            <div class="card-text">
+                                <h1>Dollars</h1>
+                                <form action="NumberToDollarsServlet">
+                                    <div class="form-group row mx-sm-3 mb-2">
+                                        <label for="username" class="col-sm-6 col-form-label">Enter Number Here</label> 
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="number2" name="number2" value="">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" >Convert to Dollars</button>
+                                </form> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
