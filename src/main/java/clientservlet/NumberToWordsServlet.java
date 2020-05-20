@@ -43,11 +43,9 @@ public class NumberToWordsServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        
-        
-        
-         TrustManager[] trustAllCerts = new TrustManager[]{
+
+        //SSL Code Fix by David 
+        TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
                 public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                     return null;
@@ -70,120 +68,44 @@ public class NumberToWordsServlet extends HttpServlet {
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         } catch (Exception e) {
         }
-        
-        
+
         // Acessing URL
-        try{
-            URL url = new URL("https://hostname/index.html");
-        } catch (MalformedURLException e) {
-        }
-        response.setContentType("text/html;charset=UTF-8");
-        
-          try (PrintWriter out = response.getWriter()){
-                // TODO initialize WS operation arguments here
-                String number1 = request.getParameter("number1");    
-                // TODO process result here
-           com.dataaccess.webservicesserver.NumberConversionSoapType port = service.getNumberConversionSoap();
-           java.math.BigInteger ubiNum = new java.math.BigInteger(number1);
-                String result = port.numberToWords(ubiNum);
-/* TODO output your page here. You may use following sample code. */
-                RequestDispatcher rdObj = null;
-           /*     
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ConvertNumbersServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-             */
-           out.println("<a href=\"index.html\">Back</a>");
-            out.println("<h1>The result: " + result + "</h1>");
-                      
-            /*out.println("</body>");
-            out.println("</html>");
-           */
-            
-                rdObj = request.getRequestDispatcher("/index.html");
-            rdObj.include(request, response);
-           
-         } catch (Exception ex) {
-            // TODO handle custom exceptions here
-        }
-    
-    }
-    
-    
-    
-    public void handleRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-         
-        
-        
-         TrustManager[] trustAllCerts = new TrustManager[]{
-            new X509TrustManager() {
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                public void checkClientTrusted(
-                        java.security.cert.X509Certificate[] certs, String authType) {
-                }
-
-                public void checkServerTrusted(
-                        java.security.cert.X509Certificate[] certs, String authType) {
-                }
-            }
-        };
-
-        // Install the all-trusting trust manager
         try {
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e) {
-        }
-        
-        
-        // Acessing URL
-        try{
-            URL url = new URL("https://hostname/index.html");
+             URL url = new URL("https://hostname/index.jsp");
         } catch (MalformedURLException e) {
         }
-        
-        response.setContentType("text/html;charset=UTF-8");
-        
-        
-          try (PrintWriter out = response.getWriter()){
-                // TODO initialize WS operation arguments here
-                String number1 = request.getParameter("number1");    
-                // TODO process result here
-           com.dataaccess.webservicesserver.NumberConversionSoapType port = service.getNumberConversionSoap();
-           java.math.BigInteger ubiNum = new java.math.BigInteger(number1);
-                String result = port.numberToWords(ubiNum);
+        //Content type to be returned
+       response.setContentType("text/html;charset=UTF-8");
 
-             /* TODO output your page here. You may use following sample code. */
-                RequestDispatcher rdObj = null;
-           /*     
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ConvertNumbersServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-             */
-           out.println("<a href=\"index.html\">Back</a>");
-            out.println("<h1>The result: " + result + "</h1>");
-                      
-            /*out.println("</body>");
-            out.println("</html>");
-           */
-            
-                rdObj = request.getRequestDispatcher("/index.html");
+        try (PrintWriter out = response.getWriter()) {
+           //User input
+            String number1 = request.getParameter("number1");
+           //Consuming the API
+            com.dataaccess.webservicesserver.NumberConversionSoapType port = service.getNumberConversionSoap();
+            //Convert inout into Big Integer
+            java.math.BigInteger ubiNum = new java.math.BigInteger(number1);
+            //Assign processed number to String
+            String result = port.numberToWords(ubiNum);
+            /* TODO output your page here. You may use following sample code. */
+
+            RequestDispatcher rdObj = null;
+           //  out.println("<%@page contentType=\"text/html\" pageEncoding=\"UTF-8\"%>");
+              
+//           //   rdObj = request.getRequestDispatcher("/index.html");
+                       rdObj = request.getRequestDispatcher("/index.jsp");
+                        request.setAttribute("result", result);
+     
             rdObj.include(request, response);
-         } catch (Exception ex) {
+
+     out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
+      
+             
+          
+
+        } catch (Exception ex) {
             // TODO handle custom exceptions here
         }
-    
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -198,7 +120,7 @@ public class NumberToWordsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         processRequest(request, response);
     }
 
@@ -213,8 +135,8 @@ public class NumberToWordsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       processRequest(request, response);
-     //handleRequest(request, response);
+        processRequest(request, response);
+        //handleRequest(request, response);
     }
 
     /**
