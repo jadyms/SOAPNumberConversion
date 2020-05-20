@@ -78,30 +78,34 @@ public class NumberToWordsServlet extends HttpServlet {
        response.setContentType("text/html;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
+             //Request Dispatcher to dispatch equest to jsp
+            RequestDispatcher rdObj = null;
+            rdObj = request.getRequestDispatcher("/index.jsp");
            //User input
             String number1 = request.getParameter("number1");
+            //Regex for numbers only
+            String regex = "\\d+";
+            //If input has not numeric characters
+            if(!number1.trim().matches(regex)){
+                //Send a message back alerting the user
+                request.setAttribute("result", "Input not valid");
+                rdObj.include(request, response);
+                out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
+            }else{
            //Consuming the API
             com.dataaccess.webservicesserver.NumberConversionSoapType port = service.getNumberConversionSoap();
-            //Convert inout into Big Integer
+            //Convert input into Big Integer
             java.math.BigInteger ubiNum = new java.math.BigInteger(number1);
             //Assign processed number to String
             String result = port.numberToWords(ubiNum);
-            /* TODO output your page here. You may use following sample code. */
-
-            RequestDispatcher rdObj = null;
-           //  out.println("<%@page contentType=\"text/html\" pageEncoding=\"UTF-8\"%>");
-              
-//           //   rdObj = request.getRequestDispatcher("/index.html");
-                       rdObj = request.getRequestDispatcher("/index.jsp");
-                        request.setAttribute("result", result);
-     
+           
+            //Assign result to variable in index.jsp            
+            request.setAttribute("result", result);
+            //Include previous page with the  response 
             rdObj.include(request, response);
-
-     out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
-      
-             
-          
-
+            //Toggle the collapse bar wto display response
+            out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
+            }
         } catch (Exception ex) {
             // TODO handle custom exceptions here
         }

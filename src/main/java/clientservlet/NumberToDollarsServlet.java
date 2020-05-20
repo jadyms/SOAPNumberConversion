@@ -14,6 +14,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,7 +44,9 @@ public class NumberToDollarsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-         TrustManager[] trustAllCerts = new TrustManager[]{
+        
+        //SSL Code Fix by David 
+        TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
                 public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                     return null;
@@ -66,41 +69,67 @@ public class NumberToDollarsServlet extends HttpServlet {
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         } catch (Exception e) {
         }
+
         // Acessing URL
-         try{
-            URL url = new URL("https://hostname/index.html");
+        try {
+             URL url = new URL("https://hostname/index.jsp");
         } catch (MalformedURLException e) {
         }
-        response.setContentType("text/html;charset=UTF-8");
+        //Content type to be returned
+       response.setContentType("text/html;charset=UTF-8");
         
-          try (PrintWriter out = response.getWriter()){
+           try (PrintWriter out = response.getWriter()) {
+             //Request Dispatcher to dispatch equest to jsp
+            RequestDispatcher rdObj = null;
+            rdObj = request.getRequestDispatcher("/index.jsp");
+           //User input
+                        
+            String number2 = request.getParameter("number2");
             
+             String regex = "\\d+";
+            //If input has not numeric characters
+            if(!number2.trim().matches(regex)){
+                //Send a message back alerting the user
+                request.setAttribute("resultDollar", "Input not valid");
+                rdObj.include(request, response);
+                 // $('.active').removeClass('active');
+  
+                 
+           //   out.println("<script type='text/javascript'>$('#words').removeClass('active');</script>");
+                out.println("<script type='text/javascript'>$('#dollar').addClass('active');</script>");
+                out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
+            }else{
                 // TODO initialize WS operation arguments here
                 com.dataaccess.webservicesserver.NumberConversionSoapType port = service.getNumberConversionSoap();
             // TODO initialize WS operation arguments here
      
             // TODO process result here
-            
-            String number2 = request.getParameter("number2");
+
             
             java.math.BigDecimal dNum = new java.math.BigDecimal(number2);
             java.lang.String result = port.numberToDollars(dNum);
             
-            response.setContentType("text/html;charset=UTF-8");
-             
-            /* TODO output your page here. You may use following sample code. */
-             out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ConvertNumbersServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>The result is " + result + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-         } catch (Exception ex) {
+            //Assign result to variable in index.jsp            
+            request.setAttribute("resultDollar", result);
+            
+          //  request.setAttribute("activeTab", "dollar");
+            //Include previous page with the  response 
+            // out.println("<script type='text/javascript'> $('#words').removeClass('active').eq($('#dollar').addClass('active');</script>");
+  
+            out.println("<script type='text/javascript'>$('.collapseDollar').collapse();</script>");
+            rdObj.include(request, response);
+            //Toggle the collapse bar wto display response
+            
+                 
+              
+                //out.println("<script type='text/javascript'>$('#dollar').addClass('active');</script>");
+               //  out.println("<script type='text/javascript'>$('#words').removeClass('active');</script>");
+              
+            }
+        } catch (Exception ex) {
             // TODO handle custom exceptions here
         }
+           
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
