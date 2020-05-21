@@ -78,9 +78,12 @@ public class NumberToWordsServlet extends HttpServlet {
        response.setContentType("text/html;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
-             //Request Dispatcher to dispatch equest to jsp
-            RequestDispatcher rdObj = null;
-            rdObj = request.getRequestDispatcher("/index.jsp");
+            //Using Request Dispatcher, based on 
+            //https://examples.javacodegeeks.com/enterprise-java/servlet/java-servlet-sendredirect-example/
+           
+            //Request Dispatcher to dispatch equest to jsp
+            RequestDispatcher rd = null;
+            rd = request.getRequestDispatcher("/index.jsp");
            //User input
             String number1 = request.getParameter("number1");
             //Regex for numbers only
@@ -89,7 +92,7 @@ public class NumberToWordsServlet extends HttpServlet {
             if(!number1.trim().matches(regex)){
                 //Send a message back alerting the user
                 request.setAttribute("result", "Input not valid");
-                rdObj.include(request, response);
+                rd.include(request, response);
                 out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
             }else{
            //Consuming the API
@@ -98,11 +101,10 @@ public class NumberToWordsServlet extends HttpServlet {
             java.math.BigInteger ubiNum = new java.math.BigInteger(number1);
             //Assign processed number to String
             String result = port.numberToWords(ubiNum);
-           
             //Assign result to variable in index.jsp            
             request.setAttribute("result", result);
             //Include previous page with the  response 
-            rdObj.include(request, response);
+            rd.include(request, response);
             //Toggle the collapse bar wto display response
             out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
             }

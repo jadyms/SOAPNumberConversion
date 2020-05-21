@@ -23,8 +23,15 @@
             <version>${jakartaee}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->
+<dependency>
+    <groupId>org.webjars</groupId>
+    <artifactId>font-awesome</artifactId>
+    <version>5.13.0</version>
+</dependency>
+
     </dependencies>
-    
+   
      <build>
         <plugins>
             <plugin>

@@ -79,52 +79,35 @@ public class NumberToDollarsServlet extends HttpServlet {
        response.setContentType("text/html;charset=UTF-8");
         
            try (PrintWriter out = response.getWriter()) {
+                //Using Request Dispatcher, based on 
+            //https://examples.javacodegeeks.com/enterprise-java/servlet/java-servlet-sendredirect-example/
              //Request Dispatcher to dispatch equest to jsp
-            RequestDispatcher rdObj = null;
-            rdObj = request.getRequestDispatcher("/index.jsp");
+            RequestDispatcher rd = null;
+            rd = request.getRequestDispatcher("/index.jsp");
            //User input
-                        
             String number2 = request.getParameter("number2");
-            
-             String regex = "\\d+";
+           // Regex for Decimals
+             String regex = "^([0-9]+\\.?[0-9]*|[0-9]*\\.[0-9]+)$";
             //If input has not numeric characters
             if(!number2.trim().matches(regex)){
                 //Send a message back alerting the user
                 request.setAttribute("resultDollar", "Input not valid");
-                rdObj.include(request, response);
-                 // $('.active').removeClass('active');
-  
-                 
-           //   out.println("<script type='text/javascript'>$('#words').removeClass('active');</script>");
-                out.println("<script type='text/javascript'>$('#dollar').addClass('active');</script>");
+                rd.include(request, response);
                 out.println("<script type='text/javascript'>$('.collapse').collapse();</script>");
             }else{
                 // TODO initialize WS operation arguments here
                 com.dataaccess.webservicesserver.NumberConversionSoapType port = service.getNumberConversionSoap();
-            // TODO initialize WS operation arguments here
-     
-            // TODO process result here
-
-            
+        
+            //String to Big Decimal
             java.math.BigDecimal dNum = new java.math.BigDecimal(number2);
+            //Convertion
             java.lang.String result = port.numberToDollars(dNum);
-            
             //Assign result to variable in index.jsp            
             request.setAttribute("resultDollar", result);
-            
-          //  request.setAttribute("activeTab", "dollar");
-            //Include previous page with the  response 
-            // out.println("<script type='text/javascript'> $('#words').removeClass('active').eq($('#dollar').addClass('active');</script>");
-  
+            //Display the collapsible box with the results
             out.println("<script type='text/javascript'>$('.collapseDollar').collapse();</script>");
-            rdObj.include(request, response);
-            //Toggle the collapse bar wto display response
-            
-                 
-              
-                //out.println("<script type='text/javascript'>$('#dollar').addClass('active');</script>");
-               //  out.println("<script type='text/javascript'>$('#words').removeClass('active');</script>");
-              
+            //Include index.jsp page in the response
+            rd.include(request, response);
             }
         } catch (Exception ex) {
             // TODO handle custom exceptions here
